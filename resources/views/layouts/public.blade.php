@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>@yield('title', 'VELLORA — Discover Something Better')</title>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+                    fontFamily: {
+                        sans: [
+                            'Inter',
+                            'ui-sans-serif',
+                            'system-ui',
+                            'sans-serif'
+                        ]
+                    },
+
                     colors: {
                         vellora: {
                             bg: '#080808',
@@ -19,179 +31,1104 @@
                             muted: '#a1a1aa',
                             gold: '#fbbf24',
                             'gold-light': '#fcd34d',
-                            'gold-muted': '#d4a72c',
+                            'gold-muted': '#d4a72c'
                         }
                     }
                 }
             }
         }
     </script>
+
+    <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
+
     <style>
-        body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
-        .fade-in { animation: fadeIn .5s ease-out both; }
-        @media (prefers-reduced-motion: reduce) { .fade-in { animation: none; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        /* =========================================================
+           GLOBAL
+        ========================================================= */
 
-        /* Flowing golden light — hero effect, CSS murni */
-        .hero-glow-1 { background: radial-gradient(circle, rgba(251,191,36,0.35) 0%, transparent 70%); animation: heroFloat1 18s ease-in-out infinite; }
-        .hero-glow-2 { background: radial-gradient(circle, rgba(252,211,77,0.30) 0%, transparent 70%); animation: heroFloat2 22s ease-in-out infinite; }
-        .hero-glow-3 { background: radial-gradient(circle, rgba(251,191,36,0.25) 0%, transparent 70%); animation: heroFloat3 26s ease-in-out infinite; }
-        /* Secondary ambient accent — subtle violet, never primary */
-        .hero-glow-violet { background: radial-gradient(circle, rgba(139,92,246,0.10) 0%, transparent 70%); animation: heroFloat2 30s ease-in-out infinite reverse; }
-        @keyframes heroFloat1 { 0%,100% { transform: translate(-50%,-50%) scale(1); } 50% { transform: translate(-45%,-55%) scale(1.12); } }
-        @keyframes heroFloat2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(6%,-6%) scale(1.18); } }
-        @keyframes heroFloat3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-6%,6%) scale(1.12); } }
-
-        /* Golden light trail — organic SVG path, slow flowing draw + drift loop */
-        .light-trail-1, .light-trail-2 {
-            stroke-dasharray: 220 900;
-            animation: trailFlow 14s linear infinite, trailDrift 20s ease-in-out infinite;
+        html,
+        body {
+            background-color: #080808;
         }
-        .light-trail-2 { animation-duration: 19s, 24s; animation-delay: -6s, -3s; }
-        @keyframes trailFlow { from { stroke-dashoffset: 1100; } to { stroke-dashoffset: -1100; } }
-        @keyframes trailDrift { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: #fbbf24;
+            color: #080808;
+        }
+
+        /* =========================================================
+           FADE IN
+        ========================================================= */
+
+        .fade-in {
+            animation: fadeIn .5s ease-out both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================================================
+           HERO GLOW
+        ========================================================= */
+
+        .hero-glow-1 {
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(251, 191, 36, 0.35) 0%,
+                    transparent 70%
+                );
+
+            animation:
+                heroFloat1 18s ease-in-out infinite;
+        }
+
+        .hero-glow-2 {
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(252, 211, 77, 0.30) 0%,
+                    transparent 70%
+                );
+
+            animation:
+                heroFloat2 22s ease-in-out infinite;
+        }
+
+        .hero-glow-3 {
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(251, 191, 36, 0.25) 0%,
+                    transparent 70%
+                );
+
+            animation:
+                heroFloat3 26s ease-in-out infinite;
+        }
+
+        .hero-glow-violet {
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(139, 92, 246, 0.10) 0%,
+                    transparent 70%
+                );
+
+            animation:
+                heroFloat2 30s ease-in-out infinite reverse;
+        }
+
+        @keyframes heroFloat1 {
+            0%,
+            100% {
+                transform:
+                    translate(-50%, -50%)
+                    scale(1);
+            }
+
+            50% {
+                transform:
+                    translate(-45%, -55%)
+                    scale(1.12);
+            }
+        }
+
+        @keyframes heroFloat2 {
+            0%,
+            100% {
+                transform:
+                    translate(0, 0)
+                    scale(1);
+            }
+
+            50% {
+                transform:
+                    translate(6%, -6%)
+                    scale(1.18);
+            }
+        }
+
+        @keyframes heroFloat3 {
+            0%,
+            100% {
+                transform:
+                    translate(0, 0)
+                    scale(1);
+            }
+
+            50% {
+                transform:
+                    translate(-6%, 6%)
+                    scale(1.12);
+            }
+        }
+
+        /* =========================================================
+           GOLDEN LIGHT TRAIL
+        ========================================================= */
+
+        .light-trail-1,
+        .light-trail-2 {
+            stroke-dasharray: 220 900;
+
+            animation:
+                trailFlow 14s linear infinite,
+                trailDrift 20s ease-in-out infinite;
+        }
+
+        .light-trail-2 {
+            animation-duration:
+                19s,
+                24s;
+
+            animation-delay:
+                -6s,
+                -3s;
+        }
+
+        @keyframes trailFlow {
+            from {
+                stroke-dashoffset: 1100;
+            }
+
+            to {
+                stroke-dashoffset: -1100;
+            }
+        }
+
+        @keyframes trailDrift {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-14px);
+            }
+        }
+
+        /* =========================================================
+           SCROLL REVEAL
+        ========================================================= */
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(16px);
+
+            transition:
+                opacity .5s ease-out,
+                transform .5s ease-out;
+        }
+
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================================================
+           FOCUS
+        ========================================================= */
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid #fbbf24;
+            outline-offset: 3px;
+        }
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
 
         @media (prefers-reduced-motion: reduce) {
-            .hero-glow-1, .hero-glow-2, .hero-glow-3, .hero-glow-violet,
-            .light-trail-1, .light-trail-2 { animation: none; }
-        }
 
-        /* Scroll reveal */
-        .reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s ease-out, transform .5s ease-out; }
-        .reveal.is-visible { opacity: 1; transform: translateY(0); }
-        @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+            .fade-in,
+
+            .hero-glow-1,
+            .hero-glow-2,
+            .hero-glow-3,
+            .hero-glow-violet,
+
+            .light-trail-1,
+            .light-trail-2 {
+                animation: none;
+            }
+
+            .reveal {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+        }
     </style>
 </head>
-<body class="bg-white text-slate-800 antialiased">
 
-    <!-- Navbar -->
-    <nav id="main-navbar" class="bg-vellora-bg/95 backdrop-blur-md border-b border-white/[0.10] sticky top-0 z-50 transition-colors duration-300">
+<body
+    class="
+        bg-vellora-bg
+        text-white
+        antialiased
+        selection:bg-vellora-gold
+        selection:text-black
+    "
+>
+
+    <!-- =========================================================
+         NAVBAR
+    ========================================================= -->
+
+    <nav
+        id="main-navbar"
+        class="
+            bg-vellora-bg/95
+            backdrop-blur-md
+            border-b
+            border-white/[0.10]
+            sticky
+            top-0
+            z-50
+            transition-all
+            duration-300
+        "
+    >
         <div class="container mx-auto px-6">
+
             <div class="flex items-center justify-between h-16">
-                <a href="{{ route('home') }}" class="flex items-center gap-2.5 text-white">
-                    <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-vellora-gold to-vellora-gold-light flex items-center justify-center text-slate-950">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+
+                <!-- Logo -->
+                <a
+                    href="{{ route('home') }}"
+                    class="
+                        flex
+                        items-center
+                        gap-2.5
+                        text-white
+                        group
+                    "
+                >
+
+                    <span
+                        class="
+                            w-8
+                            h-8
+                            rounded-lg
+                            bg-gradient-to-br
+                            from-vellora-gold
+                            to-vellora-gold-light
+                            flex
+                            items-center
+                            justify-center
+                            text-slate-950
+                            transition-transform
+                            duration-300
+                            group-hover:scale-105
+                        "
+                    >
+                        <svg
+                            class="w-4 h-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"
+                            />
+
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 12l8-4.5M12 12v9M12 12L4 7.5"
+                            />
+                        </svg>
                     </span>
-                    <span class="text-lg font-extrabold tracking-tight">VELLORA</span>
+
+                    <span
+                        class="
+                            text-lg
+                            font-extrabold
+                            tracking-tight
+                        "
+                    >
+                        VELLORA
+                    </span>
+
                 </a>
 
-                <div class="hidden md:flex items-center gap-1 text-sm font-semibold text-slate-300">
+
+                <!-- Desktop Navigation -->
+                <div
+                    class="
+                        hidden
+                        md:flex
+                        items-center
+                        gap-1
+                        text-sm
+                        font-semibold
+                        text-slate-300
+                    "
+                >
+
                     @php
-                        $navLink = fn($active) => 'relative px-4 py-2 transition-colors hover:text-vellora-gold ' . ($active ? 'text-white' : '');
+                        $navLink = fn($active) =>
+                            'relative px-4 py-2 transition-colors duration-200 hover:text-vellora-gold ' .
+                            ($active ? 'text-white' : '');
                     @endphp
-                    <a href="{{ route('home') }}" class="{{ $navLink(request()->routeIs('home')) }}">Home</a>
-                    <a href="{{ route('products.katalog') }}" class="{{ $navLink(request()->routeIs('products.*')) }}">Produk</a>
-                    <a href="{{ route('home') }}#tentang" class="{{ $navLink(false) }}">Tentang</a>
-                    <a href="{{ route('articles.index') }}" class="{{ $navLink(request()->routeIs('articles.*')) }}">Artikel</a>
-                    <a href="{{ route('contact') }}" class="{{ $navLink(request()->routeIs('contact')) }}">Kontak</a>
+
+                    <a
+                        href="{{ route('home') }}"
+                        class="{{ $navLink(request()->routeIs('home')) }}"
+                    >
+                        Home
+                    </a>
+
+                    <a
+                        href="{{ route('products.katalog') }}"
+                        class="{{ $navLink(request()->routeIs('products.*')) }}"
+                    >
+                        Produk
+                    </a>
+
+                    <a
+                        href="{{ route('home') }}#tentang"
+                        class="{{ $navLink(false) }}"
+                    >
+                        Tentang
+                    </a>
+
+                    <a
+                        href="{{ route('articles.index') }}"
+                        class="{{ $navLink(request()->routeIs('articles.*')) }}"
+                    >
+                        Artikel
+                    </a>
+
+                    <a
+                        href="{{ route('contact') }}"
+                        class="{{ $navLink(request()->routeIs('contact')) }}"
+                    >
+                        Kontak
+                    </a>
+
                 </div>
-                {{-- Tombol Login/Dashboard Admin SENGAJA tidak ditampilkan di Public Website.
-                     Auth & route admin tetap aktif — admin login lewat /login secara langsung. --}}
 
-                <button id="mobile-menu-btn" type="button" class="md:hidden p-2 text-white" aria-label="Buka menu" aria-expanded="false">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+
+                {{-- Login/Admin sengaja tidak ditampilkan di public website.
+                     Route auth dan admin tetap aktif. --}}
+
+
+                <!-- Mobile Menu Button -->
+                <button
+                    id="mobile-menu-btn"
+                    type="button"
+                    class="
+                        md:hidden
+                        p-2
+                        text-white
+                        rounded-lg
+                        hover:bg-white/5
+                        transition-colors
+                    "
+                    aria-label="Buka menu"
+                    aria-expanded="false"
+                >
+
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"
+                        />
+                    </svg>
+
                 </button>
+
             </div>
 
-            <div id="mobile-menu" class="hidden md:hidden pb-5 flex flex-col gap-1 text-sm font-semibold text-slate-300">
-                <a href="{{ route('home') }}" class="px-4 py-2.5 rounded-lg hover:bg-white/5 hover:text-vellora-gold transition-colors">Home</a>
-                <a href="{{ route('products.katalog') }}" class="px-4 py-2.5 rounded-lg hover:bg-white/5 hover:text-vellora-gold transition-colors">Produk</a>
-                <a href="{{ route('home') }}#tentang" class="px-4 py-2.5 rounded-lg hover:bg-white/5 hover:text-vellora-gold transition-colors">Tentang</a>
-                <a href="{{ route('articles.index') }}" class="px-4 py-2.5 rounded-lg hover:bg-white/5 hover:text-vellora-gold transition-colors">Artikel</a>
-                <a href="{{ route('contact') }}" class="px-4 py-2.5 rounded-lg hover:bg-white/5 hover:text-vellora-gold transition-colors">Kontak</a>
+
+            <!-- Mobile Navigation -->
+            <div
+                id="mobile-menu"
+                class="
+                    hidden
+                    md:hidden
+                    pb-5
+                    flex
+                    flex-col
+                    gap-1
+                    text-sm
+                    font-semibold
+                    text-slate-300
+                "
+            >
+
+                <a
+                    href="{{ route('home') }}"
+                    class="
+                        px-4
+                        py-2.5
+                        rounded-lg
+                        hover:bg-white/5
+                        hover:text-vellora-gold
+                        transition-colors
+                    "
+                >
+                    Home
+                </a>
+
+                <a
+                    href="{{ route('products.katalog') }}"
+                    class="
+                        px-4
+                        py-2.5
+                        rounded-lg
+                        hover:bg-white/5
+                        hover:text-vellora-gold
+                        transition-colors
+                    "
+                >
+                    Produk
+                </a>
+
+                <a
+                    href="{{ route('home') }}#tentang"
+                    class="
+                        px-4
+                        py-2.5
+                        rounded-lg
+                        hover:bg-white/5
+                        hover:text-vellora-gold
+                        transition-colors
+                    "
+                >
+                    Tentang
+                </a>
+
+                <a
+                    href="{{ route('articles.index') }}"
+                    class="
+                        px-4
+                        py-2.5
+                        rounded-lg
+                        hover:bg-white/5
+                        hover:text-vellora-gold
+                        transition-colors
+                    "
+                >
+                    Artikel
+                </a>
+
+                <a
+                    href="{{ route('contact') }}"
+                    class="
+                        px-4
+                        py-2.5
+                        rounded-lg
+                        hover:bg-white/5
+                        hover:text-vellora-gold
+                        transition-colors
+                    "
+                >
+                    Kontak
+                </a>
+
             </div>
+
         </div>
     </nav>
 
+
+    <!-- =========================================================
+         SUCCESS MESSAGE
+    ========================================================= -->
+
     @if (session('success'))
-        <div class="container mx-auto px-6 pt-6">
-            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-2xl text-center font-semibold text-sm shadow-sm">
+
+        <div
+            class="
+                container
+                mx-auto
+                px-6
+                pt-6
+                relative
+                z-40
+            "
+        >
+
+            <div
+                class="
+                    p-4
+                    bg-vellora-surface
+                    border
+                    border-vellora-gold/30
+                    text-vellora-gold
+                    rounded-2xl
+                    text-center
+                    font-semibold
+                    text-sm
+                    shadow-lg
+                    shadow-black/20
+                "
+            >
                 {{ session('success') }}
             </div>
+
         </div>
+
     @endif
+
+
+    <!-- =========================================================
+         PAGE CONTENT
+    ========================================================= -->
 
     @yield('content')
 
-    <!-- Footer -->
-    <footer class="bg-vellora-bg text-white">
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================= -->
+
+    <footer class="bg-vellora-bg text-white border-t border-white/[0.06]">
+
         <div class="container mx-auto px-6 py-16">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
+
+            <div
+                class="
+                    grid
+                    grid-cols-1
+                    md:grid-cols-3
+                    gap-10
+                    mb-12
+                "
+            >
+
+                <!-- Brand -->
                 <div>
-                    <div class="flex items-center gap-2.5 mb-4">
-                        <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-vellora-gold to-vellora-gold-light flex items-center justify-center text-slate-950">
-                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            gap-2.5
+                            mb-4
+                        "
+                    >
+
+                        <span
+                            class="
+                                w-8
+                                h-8
+                                rounded-lg
+                                bg-gradient-to-br
+                                from-vellora-gold
+                                to-vellora-gold-light
+                                flex
+                                items-center
+                                justify-center
+                                text-slate-950
+                            "
+                        >
+
+                            <svg
+                                class="w-4 h-4"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.5"
+                            >
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"
+                                />
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 12l8-4.5M12 12v9M12 12L4 7.5"
+                                />
+
+                            </svg>
+
                         </span>
-                        <span class="font-extrabold tracking-tight">VELLORA</span>
+
+                        <span
+                            class="
+                                font-extrabold
+                                tracking-tight
+                            "
+                        >
+                            VELLORA
+                        </span>
+
                     </div>
-                    <p class="text-slate-400 text-sm leading-relaxed max-w-xs">Pusat jual beli kebutuhan digital terpercaya — cepat, aman, dan terpercaya setiap hari.</p>
+
+
+                    <p
+                        class="
+                            text-slate-400
+                            text-sm
+                            leading-relaxed
+                            max-w-xs
+                        "
+                    >
+                        Pusat jual beli kebutuhan digital
+                        terpercaya — cepat, aman, dan terpercaya
+                        setiap hari.
+                    </p>
+
                 </div>
 
+
+                <!-- Navigation -->
                 <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Navigasi</p>
-                    <ul class="space-y-2.5 text-sm text-slate-400">
-                        <li><a href="{{ route('home') }}" class="hover:text-vellora-gold transition-colors">Home</a></li>
-                        <li><a href="{{ route('products.katalog') }}" class="hover:text-vellora-gold transition-colors">Produk</a></li>
-                        <li><a href="{{ route('articles.index') }}" class="hover:text-vellora-gold transition-colors">Artikel</a></li>
-                        <li><a href="{{ route('contact') }}" class="hover:text-vellora-gold transition-colors">Kontak</a></li>
+
+                    <p
+                        class="
+                            text-xs
+                            font-bold
+                            uppercase
+                            tracking-wider
+                            text-slate-500
+                            mb-4
+                        "
+                    >
+                        Navigasi
+                    </p>
+
+                    <ul
+                        class="
+                            space-y-2.5
+                            text-sm
+                            text-slate-400
+                        "
+                    >
+
+                        <li>
+                            <a
+                                href="{{ route('home') }}"
+                                class="hover:text-vellora-gold transition-colors"
+                            >
+                                Home
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="{{ route('products.katalog') }}"
+                                class="hover:text-vellora-gold transition-colors"
+                            >
+                                Produk
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="{{ route('articles.index') }}"
+                                class="hover:text-vellora-gold transition-colors"
+                            >
+                                Artikel
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="{{ route('contact') }}"
+                                class="hover:text-vellora-gold transition-colors"
+                            >
+                                Kontak
+                            </a>
+                        </li>
+
                     </ul>
+
                 </div>
 
+
+                <!-- Social -->
                 <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Sosial</p>
-                    <ul class="space-y-2.5 text-sm text-slate-400">
-                        <li><a href="https://wa.me/" target="_blank" class="hover:text-vellora-gold transition-colors">WhatsApp</a></li>
-                        <li><a href="https://instagram.com/" target="_blank" class="hover:text-vellora-gold transition-colors">Instagram</a></li>
-                        <li><a href="{{ route('home') }}#tentang" class="hover:text-vellora-gold transition-colors">Tentang Kami</a></li>
+
+                    <p
+                        class="
+                            text-xs
+                            font-bold
+                            uppercase
+                            tracking-wider
+                            text-slate-500
+                            mb-4
+                        "
+                    >
+                        Sosial
+                    </p>
+
+                    <ul
+                        class="
+                            space-y-2.5
+                            text-sm
+                            text-slate-400
+                        "
+                    >
+
+                        <!-- WhatsApp -->
+                        <li>
+
+                            <a
+                                href="https://wa.me/6285848658854"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="
+                                    hover:text-vellora-gold
+                                    transition-colors
+                                "
+                            >
+                                WhatsApp
+                            </a>
+
+                        </li>
+
+
+                        <!-- Instagram -->
+                        <li>
+
+                            <a
+                                href="https://www.instagram.com/n_advisori_?igsi=MW44Mzl2MzlvbXFreQ=="
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="
+                                    hover:text-vellora-gold
+                                    transition-colors
+                                "
+                            >
+                                Instagram
+                            </a>
+
+                        </li>
+
+
+                        <!-- TikTok -->
+                        <li>
+
+                            <a
+                                href="https://www.tiktok.com/@ur.nko04"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="
+                                    hover:text-vellora-gold
+                                    transition-colors
+                                "
+                            >
+                                TikTok
+                            </a>
+
+                        </li>
+
+
+                        <!-- Tentang -->
+                        <li>
+
+                            <a
+                                href="{{ route('home') }}#tentang"
+                                class="
+                                    hover:text-vellora-gold
+                                    transition-colors
+                                "
+                            >
+                                Tentang Kami
+                            </a>
+
+                        </li>
+
                     </ul>
+
                 </div>
+
             </div>
 
-            <div class="pt-8 border-t border-white/[0.10] text-center">
-                <p class="text-xs text-slate-500">&copy; {{ date('Y') }} VELLORA. All rights reserved.</p>
+
+            <!-- Copyright -->
+            <div
+                class="
+                    pt-8
+                    border-t
+                    border-white/[0.10]
+                    text-center
+                "
+            >
+
+                <p
+                    class="
+                        text-xs
+                        text-slate-500
+                    "
+                >
+                    &copy; {{ date('Y') }} VELLORA.
+                    All rights reserved.
+                </p>
+
             </div>
+
         </div>
+
     </footer>
 
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================= -->
+
     <script>
-        document.getElementById('mobile-menu-btn').addEventListener('click', function () {
-            const menu = document.getElementById('mobile-menu');
-            const expanded = this.getAttribute('aria-expanded') === 'true';
-            menu.classList.toggle('hidden');
-            this.setAttribute('aria-expanded', String(!expanded));
-        });
+        document.addEventListener('DOMContentLoaded', function () {
 
-        // Navbar darkens slightly on scroll
-        const navbar = document.getElementById('main-navbar');
-        if (navbar) {
-            window.addEventListener('scroll', function () {
-                if (window.scrollY > 20) {
-                    navbar.classList.add('bg-vellora-bg', 'shadow-lg', 'shadow-black/20');
-                    navbar.classList.remove('bg-vellora-bg/95');
-                } else {
-                    navbar.classList.remove('bg-vellora-bg', 'shadow-lg', 'shadow-black/20');
-                    navbar.classList.add('bg-vellora-bg/95');
-                }
-            }, { passive: true });
-        }
+            /* =====================================================
+               MOBILE MENU
+            ===================================================== */
 
-        // Lightweight scroll-reveal (fade-up), respects prefers-reduced-motion
-        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target);
+            const mobileMenuBtn =
+                document.getElementById('mobile-menu-btn');
+
+            const mobileMenu =
+                document.getElementById('mobile-menu');
+
+
+            if (mobileMenuBtn && mobileMenu) {
+
+                mobileMenuBtn.addEventListener(
+                    'click',
+                    function () {
+
+                        const expanded =
+                            this.getAttribute(
+                                'aria-expanded'
+                            ) === 'true';
+
+
+                        mobileMenu.classList.toggle(
+                            'hidden'
+                        );
+
+
+                        this.setAttribute(
+                            'aria-expanded',
+                            String(!expanded)
+                        );
+
+
+                        this.setAttribute(
+                            'aria-label',
+                            expanded
+                                ? 'Buka menu'
+                                : 'Tutup menu'
+                        );
+
                     }
-                });
-            }, { threshold: 0.15 });
-            document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-        } else {
-            document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
-        }
+                );
+
+
+                /*
+                 * Tutup menu setelah memilih
+                 * salah satu navigasi.
+                 */
+
+                mobileMenu
+                    .querySelectorAll('a')
+                    .forEach(function (link) {
+
+                        link.addEventListener(
+                            'click',
+                            function () {
+
+                                mobileMenu
+                                    .classList
+                                    .add('hidden');
+
+                                mobileMenuBtn
+                                    .setAttribute(
+                                        'aria-expanded',
+                                        'false'
+                                    );
+
+                                mobileMenuBtn
+                                    .setAttribute(
+                                        'aria-label',
+                                        'Buka menu'
+                                    );
+
+                            }
+                        );
+
+                    });
+
+            }
+
+
+            /* =====================================================
+               NAVBAR SCROLL EFFECT
+            ===================================================== */
+
+            const navbar =
+                document.getElementById(
+                    'main-navbar'
+                );
+
+
+            if (navbar) {
+
+                const updateNavbar =
+                    function () {
+
+                        if (window.scrollY > 20) {
+
+                            navbar.classList.add(
+                                'bg-vellora-bg',
+                                'shadow-lg',
+                                'shadow-black/20'
+                            );
+
+                            navbar.classList.remove(
+                                'bg-vellora-bg/95'
+                            );
+
+                        } else {
+
+                            navbar.classList.remove(
+                                'bg-vellora-bg',
+                                'shadow-lg',
+                                'shadow-black/20'
+                            );
+
+                            navbar.classList.add(
+                                'bg-vellora-bg/95'
+                            );
+
+                        }
+
+                    };
+
+
+                updateNavbar();
+
+
+                window.addEventListener(
+                    'scroll',
+                    updateNavbar,
+                    {
+                        passive: true
+                    }
+                );
+
+            }
+
+
+            /* =====================================================
+               SCROLL REVEAL
+            ===================================================== */
+
+            const prefersReducedMotion =
+                window.matchMedia(
+                    '(prefers-reduced-motion: reduce)'
+                ).matches;
+
+
+            if (
+                !prefersReducedMotion &&
+                'IntersectionObserver' in window
+            ) {
+
+                const observer =
+                    new IntersectionObserver(
+                        function (entries) {
+
+                            entries.forEach(
+                                function (entry) {
+
+                                    if (
+                                        entry.isIntersecting
+                                    ) {
+
+                                        entry.target
+                                            .classList
+                                            .add(
+                                                'is-visible'
+                                            );
+
+                                        observer.unobserve(
+                                            entry.target
+                                        );
+
+                                    }
+
+                                }
+                            );
+
+                        },
+                        {
+                            threshold: 0.15
+                        }
+                    );
+
+
+                document
+                    .querySelectorAll('.reveal')
+                    .forEach(
+                        function (element) {
+
+                            observer.observe(
+                                element
+                            );
+
+                        }
+                    );
+
+            } else {
+
+                document
+                    .querySelectorAll('.reveal')
+                    .forEach(
+                        function (element) {
+
+                            element.classList.add(
+                                'is-visible'
+                            );
+
+                        }
+                    );
+
+            }
+
+        });
     </script>
+
+</body>
+</html>
 
     {{-- =========================================================
      VELLORA 3D MULTI NEON TUBE CURSOR
