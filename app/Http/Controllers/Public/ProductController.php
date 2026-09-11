@@ -9,7 +9,7 @@ class ProductController extends Controller
 {
     /**
      * Halaman Katalog / Produk publik.
-     * GET /produk  (atau /katalog, sesuaikan dengan URL yang Anda pakai)
+     * GET /produk
      */
     public function index()
     {
@@ -32,6 +32,33 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return view('public.produk.show', compact('product'));
+        // Ambil ulasan yang sudah disetujui
+        $reviews = $product->reviews()
+            ->where('is_approved', true)
+            ->latest()
+            ->paginate(6, ['*'], 'reviews_page')
+            ->withQueryString();
+
+        // Hitung jumlah ulasan
+        $reviewCount = $product->reviews()
+            ->where('is_approved', true)
+            ->count();
+
+        // Hitung rata-rata rating
+        $averageRating = $reviewCount > 0
+            ? round(
+                (float) $product->reviews()
+                    ->where('is_approved', true)
+                    ->avg('rating'),
+                1
+            )
+            : 0;
+
+        return view('public.produk.show', compact(
+            'product',
+            'reviews',
+            'reviewCount',
+            'averageRating'
+        ));
     }
 }

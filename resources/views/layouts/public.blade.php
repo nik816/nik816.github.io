@@ -1,12 +1,25 @@
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>@yield('title', 'VELLORA — Discover Something Better')</title>
 
-    <!-- Tailwind CSS -->
+    {{-- Favicon --}}
+    <link
+        rel="icon"
+        type="image/png"
+        href="{{ asset('images/vellora-icon.png') }}"
+    >
+
+    <link
+        rel="apple-touch-icon"
+        href="{{ asset('images/vellora-icon.png') }}"
+    >
+
+    {{-- Tailwind CSS --}}
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
@@ -39,25 +52,38 @@
         }
     </script>
 
-    <!-- Google Font -->
+    {{-- Google Font --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet"
     >
 
     <style>
+
         /* =========================================================
            GLOBAL
         ========================================================= */
 
         html,
         body {
-            background-color: #080808;
+            background: #080808;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            font-family:
+                'Inter',
+                ui-sans-serif,
+                system-ui,
+                sans-serif;
+
             overflow-x: hidden;
         }
 
@@ -66,31 +92,96 @@
             color: #080808;
         }
 
+        img {
+            max-width: 100%;
+        }
+
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+
         /* =========================================================
-           FADE IN
+           PAGE FADE IN
         ========================================================= */
 
         .fade-in {
-            animation: fadeIn .5s ease-out both;
+            animation:
+                fadeIn
+                .7s
+                cubic-bezier(.22, 1, .36, 1)
+                both;
         }
 
         @keyframes fadeIn {
+
             from {
                 opacity: 0;
-                transform: translateY(8px);
+                transform: translateY(15px);
             }
 
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
+
         }
+
+
+        /* =========================================================
+           PREMIUM SCROLL REVEAL
+           
+           Efek:
+           - mulai dari bawah
+           - sedikit mengecil
+           - blur
+           - kemudian naik
+           - membesar normal
+           - blur hilang
+        ========================================================= */
+
+        .reveal {
+
+            opacity: 0;
+
+            transform:
+                translateY(55px)
+                scale(0.97);
+
+            filter:
+                blur(6px);
+
+            transition:
+                opacity .8s cubic-bezier(.22, 1, .36, 1),
+                transform .8s cubic-bezier(.22, 1, .36, 1),
+                filter .8s cubic-bezier(.22, 1, .36, 1);
+
+            will-change:
+                opacity,
+                transform,
+                filter;
+        }
+
+
+        .reveal.is-visible {
+
+            opacity: 1;
+
+            transform:
+                translateY(0)
+                scale(1);
+
+            filter:
+                blur(0);
+        }
+
 
         /* =========================================================
            HERO GLOW
         ========================================================= */
 
         .hero-glow-1 {
+
             background:
                 radial-gradient(
                     circle,
@@ -99,10 +190,15 @@
                 );
 
             animation:
-                heroFloat1 18s ease-in-out infinite;
+                heroFloat1
+                18s
+                ease-in-out
+                infinite;
         }
 
+
         .hero-glow-2 {
+
             background:
                 radial-gradient(
                     circle,
@@ -111,10 +207,15 @@
                 );
 
             animation:
-                heroFloat2 22s ease-in-out infinite;
+                heroFloat2
+                22s
+                ease-in-out
+                infinite;
         }
 
+
         .hero-glow-3 {
+
             background:
                 radial-gradient(
                     circle,
@@ -123,22 +224,33 @@
                 );
 
             animation:
-                heroFloat3 26s ease-in-out infinite;
+                heroFloat3
+                26s
+                ease-in-out
+                infinite;
         }
 
+
         .hero-glow-violet {
+
             background:
                 radial-gradient(
                     circle,
-                    rgba(139, 92, 246, 0.10) 0%,
+                    rgba(139, 92, 246, 0.08) 0%,
                     transparent 70%
                 );
 
             animation:
-                heroFloat2 30s ease-in-out infinite reverse;
+                heroFloat2
+                30s
+                ease-in-out
+                infinite
+                reverse;
         }
 
+
         @keyframes heroFloat1 {
+
             0%,
             100% {
                 transform:
@@ -151,9 +263,12 @@
                     translate(-45%, -55%)
                     scale(1.12);
             }
+
         }
 
+
         @keyframes heroFloat2 {
+
             0%,
             100% {
                 transform:
@@ -166,9 +281,12 @@
                     translate(6%, -6%)
                     scale(1.18);
             }
+
         }
 
+
         @keyframes heroFloat3 {
+
             0%,
             100% {
                 transform:
@@ -181,7 +299,9 @@
                     translate(-6%, 6%)
                     scale(1.12);
             }
+
         }
+
 
         /* =========================================================
            GOLDEN LIGHT TRAIL
@@ -189,14 +309,18 @@
 
         .light-trail-1,
         .light-trail-2 {
-            stroke-dasharray: 220 900;
+
+            stroke-dasharray:
+                220 900;
 
             animation:
                 trailFlow 14s linear infinite,
                 trailDrift 20s ease-in-out infinite;
         }
 
+
         .light-trail-2 {
+
             animation-duration:
                 19s,
                 24s;
@@ -206,7 +330,9 @@
                 -3s;
         }
 
+
         @keyframes trailFlow {
+
             from {
                 stroke-dashoffset: 1100;
             }
@@ -214,9 +340,12 @@
             to {
                 stroke-dashoffset: -1100;
             }
+
         }
 
+
         @keyframes trailDrift {
+
             0%,
             100% {
                 transform: translateY(0);
@@ -225,25 +354,158 @@
             50% {
                 transform: translateY(-14px);
             }
+
         }
+
 
         /* =========================================================
-           SCROLL REVEAL
+           NAVBAR
         ========================================================= */
 
-        .reveal {
-            opacity: 0;
-            transform: translateY(16px);
+        .navbar {
 
             transition:
-                opacity .5s ease-out,
-                transform .5s ease-out;
+                background-color .3s ease,
+                border-color .3s ease,
+                box-shadow .3s ease,
+                backdrop-filter .3s ease;
         }
 
-        .reveal.is-visible {
-            opacity: 1;
-            transform: translateY(0);
+
+        .navbar.scrolled {
+
+            background:
+                rgba(8, 8, 8, .92);
+
+            border-color:
+                rgba(255, 255, 255, .08);
+
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, .28);
+
+            backdrop-filter:
+                blur(16px);
+
+            -webkit-backdrop-filter:
+                blur(16px);
         }
+
+
+        /* =========================================================
+           BRAND
+        ========================================================= */
+
+        .brand-link {
+
+            transition:
+                opacity .2s ease;
+        }
+
+
+        .brand-link:hover {
+            opacity: .95;
+        }
+
+
+        .brand-icon {
+
+            width: 34px;
+            height: 34px;
+
+            object-fit: contain;
+
+            flex-shrink: 0;
+
+            transition:
+                transform .3s ease,
+                filter .3s ease;
+        }
+
+
+        .brand-link:hover .brand-icon {
+
+            transform:
+                scale(1.06);
+
+            filter:
+                drop-shadow(
+                    0 0 8px
+                    rgba(251, 191, 36, .25)
+                );
+        }
+
+
+        .brand-name {
+
+            font-size: 18px;
+
+            font-weight: 800;
+
+            letter-spacing:
+                -.025em;
+
+            color: #ffffff;
+
+            transition:
+                color .2s ease;
+        }
+
+
+        .brand-link:hover .brand-name {
+
+            color:
+                #fbbf24;
+        }
+
+
+        /* =========================================================
+           FOOTER BRAND
+        ========================================================= */
+
+        .footer-brand-icon {
+
+            width: 42px;
+            height: 42px;
+
+            object-fit: contain;
+
+            flex-shrink: 0;
+
+            transition:
+                transform .3s ease;
+        }
+
+
+        .footer-brand-link:hover .footer-brand-icon {
+
+            transform:
+                scale(1.05);
+        }
+
+
+        /* =========================================================
+           BUTTON
+        ========================================================= */
+
+        .btn-gold {
+
+            transition:
+                transform .2s ease,
+                background-color .2s ease,
+                box-shadow .2s ease;
+        }
+
+
+        .btn-gold:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(251, 191, 36, .18);
+        }
+
 
         /* =========================================================
            FOCUS
@@ -251,9 +513,78 @@
 
         a:focus-visible,
         button:focus-visible {
-            outline: 2px solid #fbbf24;
-            outline-offset: 3px;
+
+            outline:
+                2px solid #fbbf24;
+
+            outline-offset:
+                3px;
         }
+
+
+        /* =========================================================
+           MOBILE MENU
+        ========================================================= */
+
+        .mobile-menu {
+
+            transition:
+                opacity .25s ease,
+                transform .25s ease;
+        }
+
+
+        .mobile-menu.hidden-menu {
+
+            opacity:
+                0;
+
+            transform:
+                translateY(-8px);
+
+            pointer-events:
+                none;
+        }
+
+
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
+        @media (max-width: 640px) {
+
+            .brand-icon {
+
+                width: 30px;
+                height: 30px;
+            }
+
+
+            .brand-name {
+
+                font-size: 17px;
+            }
+
+
+            .footer-brand-icon {
+
+                width: 38px;
+                height: 38px;
+            }
+
+
+            .reveal {
+
+                transform:
+                    translateY(45px)
+                    scale(.98);
+
+                filter:
+                    blur(5px);
+            }
+
+        }
+
 
         /* =========================================================
            REDUCED MOTION
@@ -261,172 +592,219 @@
 
         @media (prefers-reduced-motion: reduce) {
 
-            .fade-in,
+            html {
+                scroll-behavior: auto;
+            }
 
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                    .01ms !important;
+
+                animation-iteration-count:
+                    1 !important;
+
+                transition-duration:
+                    .01ms !important;
+            }
+
+
+            .fade-in,
             .hero-glow-1,
             .hero-glow-2,
             .hero-glow-3,
             .hero-glow-violet,
-
             .light-trail-1,
             .light-trail-2 {
-                animation: none;
+
+                animation:
+                    none !important;
             }
+
 
             .reveal {
-                opacity: 1;
-                transform: none;
-                transition: none;
+
+                opacity:
+                    1;
+
+                transform:
+                    none;
+
+                filter:
+                    none;
+
+                transition:
+                    none;
             }
+
         }
+
     </style>
+
+
+    @stack('styles')
+
 </head>
 
-<body
-    class="
-        bg-vellora-bg
-        text-white
-        antialiased
-        selection:bg-vellora-gold
-        selection:text-black
-    "
->
 
-    <!-- =========================================================
+<body class="bg-vellora-bg text-white antialiased">
+
+
+    {{-- =========================================================
          NAVBAR
-    ========================================================= -->
+    ========================================================== --}}
 
     <nav
-        id="main-navbar"
+        id="mainNavbar"
         class="
-            bg-vellora-bg/95
-            backdrop-blur-md
-            border-b
-            border-white/[0.10]
-            sticky
+            navbar
+            fixed
             top-0
+            left-0
+            right-0
             z-50
-            transition-all
-            duration-300
+            bg-vellora-bg
+            border-b
+            border-transparent
         "
     >
-        <div class="container mx-auto px-6">
 
-            <div class="flex items-center justify-between h-16">
+        <div
+            class="
+                container
+                mx-auto
+                px-5
+                lg:px-8
+            "
+        >
 
-                <!-- Logo -->
+            <div
+                class="
+                    flex
+                    items-center
+                    justify-between
+                    h-[76px]
+                "
+            >
+
+
+                {{-- =================================================
+                     BRAND
+                ================================================== --}}
+
                 <a
                     href="{{ route('home') }}"
                     class="
+                        brand-link
                         flex
                         items-center
                         gap-2.5
-                        text-white
-                        group
+                        shrink-0
+                        ml-1
                     "
+                    aria-label="VELLORA"
                 >
 
-                    <span
-                        class="
-                            w-8
-                            h-8
-                            rounded-lg
-                            bg-gradient-to-br
-                            from-vellora-gold
-                            to-vellora-gold-light
-                            flex
-                            items-center
-                            justify-center
-                            text-slate-950
-                            transition-transform
-                            duration-300
-                            group-hover:scale-105
-                        "
+                    <img
+                        src="{{ asset('images/vellora-icon.png') }}"
+                        alt="VA"
+                        class="brand-icon"
+                        onerror="this.style.display='none';"
                     >
-                        <svg
-                            class="w-4 h-4"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"
-                            />
 
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M12 12l8-4.5M12 12v9M12 12L4 7.5"
-                            />
-                        </svg>
-                    </span>
-
-                    <span
-                        class="
-                            text-lg
-                            font-extrabold
-                            tracking-tight
-                        "
-                    >
+                    <span class="brand-name">
                         VELLORA
                     </span>
 
                 </a>
 
 
-                <!-- Desktop Navigation -->
+                {{-- =================================================
+                     DESKTOP MENU
+                ================================================== --}}
+
                 <div
                     class="
                         hidden
                         md:flex
                         items-center
-                        gap-1
-                        text-sm
-                        font-semibold
-                        text-slate-300
+                        gap-8
                     "
                 >
 
-                    @php
-                        $navLink = fn($active) =>
-                            'relative px-4 py-2 transition-colors duration-200 hover:text-vellora-gold ' .
-                            ($active ? 'text-white' : '');
-                    @endphp
-
                     <a
                         href="{{ route('home') }}"
-                        class="{{ $navLink(request()->routeIs('home')) }}"
+                        class="
+                            text-sm
+                            font-semibold
+                            transition-colors
+                            duration-200
+                            hover:text-vellora-gold
+                            {{ request()->routeIs('home') ? 'text-white' : 'text-white/70' }}
+                        "
                     >
                         Home
                     </a>
 
+
                     <a
                         href="{{ route('products.katalog') }}"
-                        class="{{ $navLink(request()->routeIs('products.*')) }}"
+                        class="
+                            text-sm
+                            font-semibold
+                            transition-colors
+                            duration-200
+                            hover:text-vellora-gold
+                            {{ request()->routeIs('products.*') ? 'text-white' : 'text-white/70' }}
+                        "
                     >
                         Produk
                     </a>
 
+
                     <a
                         href="{{ route('home') }}#tentang"
-                        class="{{ $navLink(false) }}"
+                        class="
+                            text-sm
+                            font-semibold
+                            text-white/70
+                            hover:text-vellora-gold
+                            transition-colors
+                            duration-200
+                        "
                     >
                         Tentang
                     </a>
 
+
                     <a
                         href="{{ route('articles.index') }}"
-                        class="{{ $navLink(request()->routeIs('articles.*')) }}"
+                        class="
+                            text-sm
+                            font-semibold
+                            transition-colors
+                            duration-200
+                            hover:text-vellora-gold
+                            {{ request()->routeIs('articles.*') ? 'text-white' : 'text-white/70' }}
+                        "
                     >
                         Artikel
                     </a>
 
+
                     <a
                         href="{{ route('contact') }}"
-                        class="{{ $navLink(request()->routeIs('contact')) }}"
+                        class="
+                            text-sm
+                            font-semibold
+                            transition-colors
+                            duration-200
+                            hover:text-vellora-gold
+                            {{ request()->routeIs('contact') ? 'text-white' : 'text-white/70' }}
+                        "
                     >
                         Kontak
                     </a>
@@ -434,38 +812,66 @@
                 </div>
 
 
-                {{-- Login/Admin sengaja tidak ditampilkan di public website.
-                     Route auth dan admin tetap aktif. --}}
+                {{-- =================================================
+                     MOBILE BUTTON
+                ================================================== --}}
 
-
-                <!-- Mobile Menu Button -->
                 <button
-                    id="mobile-menu-btn"
+                    id="mobileMenuButton"
                     type="button"
                     class="
                         md:hidden
-                        p-2
+                        w-10
+                        h-10
+                        rounded-xl
+                        border
+                        border-white/10
+                        bg-white/[0.03]
+                        flex
+                        items-center
+                        justify-center
                         text-white
-                        rounded-lg
-                        hover:bg-white/5
-                        transition-colors
+                        hover:border-vellora-gold/30
+                        hover:text-vellora-gold
+                        transition
                     "
                     aria-label="Buka menu"
                     aria-expanded="false"
                 >
 
                     <svg
-                        class="w-6 h-6"
+                        id="menuOpenIcon"
+                        class="w-5 h-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                     >
+
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
                             stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16"
                         />
+
+                    </svg>
+
+
+                    <svg
+                        id="menuCloseIcon"
+                        class="w-5 h-5 hidden"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"
+                        />
+
                     </svg>
 
                 </button>
@@ -473,152 +879,195 @@
             </div>
 
 
-            <!-- Mobile Navigation -->
+            {{-- =================================================
+                 MOBILE MENU
+            ================================================== --}}
+
             <div
-                id="mobile-menu"
+                id="mobileMenu"
                 class="
-                    hidden
+                    mobile-menu
+                    hidden-menu
                     md:hidden
-                    pb-5
-                    flex
-                    flex-col
-                    gap-1
-                    text-sm
-                    font-semibold
-                    text-slate-300
+                    border-t
+                    border-white/[0.08]
+                    py-4
                 "
             >
 
-                <a
-                    href="{{ route('home') }}"
-                    class="
-                        px-4
-                        py-2.5
-                        rounded-lg
-                        hover:bg-white/5
-                        hover:text-vellora-gold
-                        transition-colors
-                    "
-                >
-                    Home
-                </a>
+                <div class="flex flex-col gap-1">
 
-                <a
-                    href="{{ route('products.katalog') }}"
-                    class="
-                        px-4
-                        py-2.5
-                        rounded-lg
-                        hover:bg-white/5
-                        hover:text-vellora-gold
-                        transition-colors
-                    "
-                >
-                    Produk
-                </a>
 
-                <a
-                    href="{{ route('home') }}#tentang"
-                    class="
-                        px-4
-                        py-2.5
-                        rounded-lg
-                        hover:bg-white/5
-                        hover:text-vellora-gold
-                        transition-colors
-                    "
-                >
-                    Tentang
-                </a>
+                    <a
+                        href="{{ route('home') }}"
+                        class="
+                            px-4
+                            py-3
+                            rounded-xl
+                            text-sm
+                            font-semibold
+                            text-white/80
+                            hover:bg-white/[0.04]
+                            hover:text-vellora-gold
+                            transition
+                        "
+                    >
+                        Home
+                    </a>
 
-                <a
-                    href="{{ route('articles.index') }}"
-                    class="
-                        px-4
-                        py-2.5
-                        rounded-lg
-                        hover:bg-white/5
-                        hover:text-vellora-gold
-                        transition-colors
-                    "
-                >
-                    Artikel
-                </a>
 
-                <a
-                    href="{{ route('contact') }}"
-                    class="
-                        px-4
-                        py-2.5
-                        rounded-lg
-                        hover:bg-white/5
-                        hover:text-vellora-gold
-                        transition-colors
-                    "
-                >
-                    Kontak
-                </a>
+                    <a
+                        href="{{ route('products.katalog') }}"
+                        class="
+                            px-4
+                            py-3
+                            rounded-xl
+                            text-sm
+                            font-semibold
+                            text-white/80
+                            hover:bg-white/[0.04]
+                            hover:text-vellora-gold
+                            transition
+                        "
+                    >
+                        Produk
+                    </a>
+
+
+                    <a
+                        href="{{ route('home') }}#tentang"
+                        class="
+                            px-4
+                            py-3
+                            rounded-xl
+                            text-sm
+                            font-semibold
+                            text-white/80
+                            hover:bg-white/[0.04]
+                            hover:text-vellora-gold
+                            transition
+                        "
+                    >
+                        Tentang
+                    </a>
+
+
+                    <a
+                        href="{{ route('articles.index') }}"
+                        class="
+                            px-4
+                            py-3
+                            rounded-xl
+                            text-sm
+                            font-semibold
+                            text-white/80
+                            hover:bg-white/[0.04]
+                            hover:text-vellora-gold
+                            transition
+                        "
+                    >
+                        Artikel
+                    </a>
+
+
+                    <a
+                        href="{{ route('contact') }}"
+                        class="
+                            px-4
+                            py-3
+                            rounded-xl
+                            text-sm
+                            font-semibold
+                            text-white/80
+                            hover:bg-white/[0.04]
+                            hover:text-vellora-gold
+                            transition
+                        "
+                    >
+                        Kontak
+                    </a>
+
+                </div>
 
             </div>
 
         </div>
+
     </nav>
 
 
-    <!-- =========================================================
-         SUCCESS MESSAGE
-    ========================================================= -->
+    {{-- =========================================================
+         MAIN CONTENT
+    ========================================================== --}}
 
-    @if (session('success'))
+    <main class="min-h-screen pt-[76px]">
+
+
+        {{-- =========================================================
+             SESSION SUCCESS
+        ========================================================== --}}
+
+        @if(session('success'))
+
+            <div
+                class="
+                    container
+                    mx-auto
+                    px-4
+                    pt-5
+                "
+            >
+
+                <div
+                    class="
+                        max-w-4xl
+                        mx-auto
+                        bg-vellora-gold/10
+                        border
+                        border-vellora-gold/20
+                        text-vellora-gold-light
+                        rounded-2xl
+                        px-5
+                        py-4
+                        text-sm
+                        font-medium
+                    "
+                >
+                    {{ session('success') }}
+                </div>
+
+            </div>
+
+        @endif
+
+
+        @yield('content')
+
+    </main>
+
+
+    {{-- =========================================================
+         FOOTER
+    ========================================================== --}}
+
+    <footer
+        class="
+            bg-vellora-bg
+            border-t
+            border-white/[0.08]
+            pt-14
+            pb-8
+        "
+    >
 
         <div
             class="
                 container
                 mx-auto
-                px-6
-                pt-6
-                relative
-                z-40
+                px-5
+                lg:px-8
             "
         >
-
-            <div
-                class="
-                    p-4
-                    bg-vellora-surface
-                    border
-                    border-vellora-gold/30
-                    text-vellora-gold
-                    rounded-2xl
-                    text-center
-                    font-semibold
-                    text-sm
-                    shadow-lg
-                    shadow-black/20
-                "
-            >
-                {{ session('success') }}
-            </div>
-
-        </div>
-
-    @endif
-
-
-    <!-- =========================================================
-         PAGE CONTENT
-    ========================================================= -->
-
-    @yield('content')
-
-
-    <!-- =========================================================
-         FOOTER
-    ========================================================= -->
-
-    <footer class="bg-vellora-bg text-white border-t border-white/[0.06]">
-
-        <div class="container mx-auto px-6 py-16">
 
             <div
                 class="
@@ -626,273 +1075,266 @@
                     grid-cols-1
                     md:grid-cols-3
                     gap-10
-                    mb-12
+                    pb-10
                 "
             >
 
-                <!-- Brand -->
+
+                {{-- =================================================
+                     BRAND
+                ================================================== --}}
+
                 <div>
 
-                    <div
+                    <a
+                        href="{{ route('home') }}"
                         class="
-                            flex
+                            footer-brand-link
+                            inline-flex
                             items-center
-                            gap-2.5
-                            mb-4
+                            gap-3
+                            group
                         "
+                        aria-label="VELLORA"
                     >
 
-                        <span
-                            class="
-                                w-8
-                                h-8
-                                rounded-lg
-                                bg-gradient-to-br
-                                from-vellora-gold
-                                to-vellora-gold-light
-                                flex
-                                items-center
-                                justify-center
-                                text-slate-950
-                            "
+                        <img
+                            src="{{ asset('images/vellora-icon.png') }}"
+                            alt="VA"
+                            class="footer-brand-icon"
+                            onerror="this.style.display='none';"
                         >
 
-                            <svg
-                                class="w-4 h-4"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2.5"
-                            >
-
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"
-                                />
-
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M12 12l8-4.5M12 12v9M12 12L4 7.5"
-                                />
-
-                            </svg>
-
-                        </span>
-
                         <span
                             class="
+                                text-xl
                                 font-extrabold
                                 tracking-tight
+                                text-white
+                                group-hover:text-vellora-gold
+                                transition-colors
                             "
                         >
                             VELLORA
                         </span>
 
-                    </div>
+                    </a>
 
 
                     <p
                         class="
-                            text-slate-400
+                            text-vellora-muted
                             text-sm
                             leading-relaxed
-                            max-w-xs
+                            max-w-sm
+                            mt-5
                         "
                     >
-                        Pusat jual beli kebutuhan digital
-                        terpercaya — cepat, aman, dan terpercaya
-                        setiap hari.
+                        Pusat jual beli kebutuhan digital terpercaya —
+                        cepat, aman, dan terpercaya setiap hari.
                     </p>
 
                 </div>
 
 
-                <!-- Navigation -->
+                {{-- =================================================
+                     NAVIGASI
+                ================================================== --}}
+
                 <div>
 
-                    <p
+                    <h3
                         class="
-                            text-xs
+                            text-sm
                             font-bold
-                            uppercase
-                            tracking-wider
-                            text-slate-500
+                            text-white
                             mb-4
                         "
                     >
                         Navigasi
-                    </p>
+                    </h3>
 
-                    <ul
+
+                    <div
                         class="
-                            space-y-2.5
-                            text-sm
-                            text-slate-400
+                            flex
+                            flex-col
+                            gap-3
                         "
                     >
 
-                        <li>
-                            <a
-                                href="{{ route('home') }}"
-                                class="hover:text-vellora-gold transition-colors"
-                            >
-                                Home
-                            </a>
-                        </li>
+                        <a
+                            href="{{ route('home') }}"
+                            class="
+                                text-sm
+                                text-vellora-muted
+                                hover:text-vellora-gold
+                                transition
+                            "
+                        >
+                            Home
+                        </a>
 
-                        <li>
-                            <a
-                                href="{{ route('products.katalog') }}"
-                                class="hover:text-vellora-gold transition-colors"
-                            >
-                                Produk
-                            </a>
-                        </li>
 
-                        <li>
-                            <a
-                                href="{{ route('articles.index') }}"
-                                class="hover:text-vellora-gold transition-colors"
-                            >
-                                Artikel
-                            </a>
-                        </li>
+                        <a
+                            href="{{ route('products.katalog') }}"
+                            class="
+                                text-sm
+                                text-vellora-muted
+                                hover:text-vellora-gold
+                                transition
+                            "
+                        >
+                            Produk
+                        </a>
 
-                        <li>
-                            <a
-                                href="{{ route('contact') }}"
-                                class="hover:text-vellora-gold transition-colors"
-                            >
-                                Kontak
-                            </a>
-                        </li>
 
-                    </ul>
+                        <a
+                            href="{{ route('articles.index') }}"
+                            class="
+                                text-sm
+                                text-vellora-muted
+                                hover:text-vellora-gold
+                                transition
+                            "
+                        >
+                            Artikel
+                        </a>
+
+
+                        <a
+                            href="{{ route('contact') }}"
+                            class="
+                                text-sm
+                                text-vellora-muted
+                                hover:text-vellora-gold
+                                transition
+                            "
+                        >
+                            Kontak
+                        </a>
+
+                    </div>
 
                 </div>
 
 
-                <!-- Social -->
+                {{-- =================================================
+                     KONTAK
+                ================================================== --}}
+
                 <div>
 
-                    <p
+                    <h3
                         class="
-                            text-xs
+                            text-sm
                             font-bold
-                            uppercase
-                            tracking-wider
-                            text-slate-500
+                            text-white
                             mb-4
                         "
                     >
-                        Sosial
-                    </p>
+                        Hubungi Kami
+                    </h3>
 
-                    <ul
+
+                    <div
                         class="
-                            space-y-2.5
-                            text-sm
-                            text-slate-400
+                            flex
+                            flex-col
+                            gap-3
                         "
                     >
 
-                        <!-- WhatsApp -->
-                        <li>
-
-                            <a
-                                href="https://wa.me/6285848658854"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="
-                                    hover:text-vellora-gold
-                                    transition-colors
-                                "
-                            >
-                                WhatsApp
-                            </a>
-
-                        </li>
+                        <a
+                            href="https://wa.me/6285848658854"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="
+                                text-sm
+                                text-vellora-muted
+                                hover:text-vellora-gold
+                                transition
+                            "
+                        >
+                            WhatsApp
+                        </a>
 
 
-                        <!-- Instagram -->
-                        <li>
-
-                            <a
-                                href="https://www.instagram.com/n_advisori_?igsi=MW44Mzl2MzlvbXFreQ=="
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="
-                                    hover:text-vellora-gold
-                                    transition-colors
-                                "
-                            >
-                                Instagram
-                            </a>
-
-                        </li>
+                        <a
+                            href="https://www.instagram.com/n_advisori_?igsi=MW44Mzl2MzlvbXFreQ=="
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="
+                                text-sm
+                                text-vellora-muted
+                                hover:text-vellora-gold
+                                transition
+                            "
+                        >
+                            Instagram
+                        </a>
 
 
-                        <!-- TikTok -->
-                        <li>
+                        <a
+                            href="https://www.tiktok.com/@ur.nko04"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="
+                                text-sm
+                                text-vellora-muted
+                                hover:text-vellora-gold
+                                transition
+                            "
+                        >
+                            TikTok
+                        </a>
 
-                            <a
-                                href="https://www.tiktok.com/@ur.nko04"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="
-                                    hover:text-vellora-gold
-                                    transition-colors
-                                "
-                            >
-                                TikTok
-                            </a>
-
-                        </li>
-
-
-                        <!-- Tentang -->
-                        <li>
-
-                            <a
-                                href="{{ route('home') }}#tentang"
-                                class="
-                                    hover:text-vellora-gold
-                                    transition-colors
-                                "
-                            >
-                                Tentang Kami
-                            </a>
-
-                        </li>
-
-                    </ul>
+                    </div>
 
                 </div>
 
             </div>
 
 
-            <!-- Copyright -->
+            {{-- =================================================
+                 COPYRIGHT
+            ================================================== --}}
+
             <div
                 class="
-                    pt-8
                     border-t
-                    border-white/[0.10]
-                    text-center
+                    border-white/[0.08]
+                    pt-6
+                    flex
+                    flex-col
+                    md:flex-row
+                    items-center
+                    justify-between
+                    gap-3
                 "
             >
 
                 <p
                     class="
                         text-xs
-                        text-slate-500
+                        text-vellora-muted
                     "
                 >
-                    &copy; {{ date('Y') }} VELLORA.
-                    All rights reserved.
+                    © {{ date('Y') }} VELLORA. All rights reserved.
                 </p>
+
+
+                <a
+                    href="{{ route('home') }}#tentang"
+                    class="
+                        text-xs
+                        text-vellora-muted
+                        hover:text-vellora-gold
+                        transition
+                    "
+                >
+                    Tentang Kami
+                </a>
 
             </div>
 
@@ -901,62 +1343,120 @@
     </footer>
 
 
-    <!-- =========================================================
-         JAVASCRIPT
-    ========================================================= -->
+    {{-- =========================================================
+     JAVASCRIPT
+========================================================== --}}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
+<script>
 
-            /* =====================================================
+    document.addEventListener(
+        'DOMContentLoaded',
+        function () {
+
+            /* =================================================
+               NAVBAR SCROLL EFFECT
+            ================================================== */
+
+            const navbar =
+                document.getElementById('mainNavbar');
+
+            function handleNavbarScroll() {
+
+                if (!navbar) return;
+
+                if (window.scrollY > 20) {
+
+                    navbar.classList.add('scrolled');
+
+                } else {
+
+                    navbar.classList.remove('scrolled');
+
+                }
+            }
+
+            handleNavbarScroll();
+
+            window.addEventListener(
+                'scroll',
+                handleNavbarScroll,
+                { passive: true }
+            );
+
+
+            /* =================================================
                MOBILE MENU
-            ===================================================== */
+            ================================================== */
 
-            const mobileMenuBtn =
-                document.getElementById('mobile-menu-btn');
+            const mobileButton =
+                document.getElementById('mobileMenuButton');
 
             const mobileMenu =
-                document.getElementById('mobile-menu');
+                document.getElementById('mobileMenu');
 
+            const menuOpenIcon =
+                document.getElementById('menuOpenIcon');
 
-            if (mobileMenuBtn && mobileMenu) {
+            const menuCloseIcon =
+                document.getElementById('menuCloseIcon');
 
-                mobileMenuBtn.addEventListener(
+            if (
+                mobileButton &&
+                mobileMenu &&
+                menuOpenIcon &&
+                menuCloseIcon
+            ) {
+
+                mobileButton.addEventListener(
                     'click',
                     function () {
 
-                        const expanded =
-                            this.getAttribute(
+                        const isOpen =
+                            mobileButton.getAttribute(
                                 'aria-expanded'
                             ) === 'true';
 
+                        if (isOpen) {
 
-                        mobileMenu.classList.toggle(
-                            'hidden'
-                        );
+                            mobileMenu.classList.add(
+                                'hidden-menu'
+                            );
 
+                            menuOpenIcon.classList.remove(
+                                'hidden'
+                            );
 
-                        this.setAttribute(
-                            'aria-expanded',
-                            String(!expanded)
-                        );
+                            menuCloseIcon.classList.add(
+                                'hidden'
+                            );
 
+                            mobileButton.setAttribute(
+                                'aria-expanded',
+                                'false'
+                            );
 
-                        this.setAttribute(
-                            'aria-label',
-                            expanded
-                                ? 'Buka menu'
-                                : 'Tutup menu'
-                        );
+                        } else {
 
+                            mobileMenu.classList.remove(
+                                'hidden-menu'
+                            );
+
+                            menuOpenIcon.classList.add(
+                                'hidden'
+                            );
+
+                            menuCloseIcon.classList.remove(
+                                'hidden'
+                            );
+
+                            mobileButton.setAttribute(
+                                'aria-expanded',
+                                'true'
+                            );
+                        }
                     }
                 );
 
-
-                /*
-                 * Tutup menu setelah memilih
-                 * salah satu navigasi.
-                 */
 
                 mobileMenu
                     .querySelectorAll('a')
@@ -966,21 +1466,22 @@
                             'click',
                             function () {
 
-                                mobileMenu
-                                    .classList
-                                    .add('hidden');
+                                mobileMenu.classList.add(
+                                    'hidden-menu'
+                                );
 
-                                mobileMenuBtn
-                                    .setAttribute(
-                                        'aria-expanded',
-                                        'false'
-                                    );
+                                menuOpenIcon.classList.remove(
+                                    'hidden'
+                                );
 
-                                mobileMenuBtn
-                                    .setAttribute(
-                                        'aria-label',
-                                        'Buka menu'
-                                    );
+                                menuCloseIcon.classList.add(
+                                    'hidden'
+                                );
+
+                                mobileButton.setAttribute(
+                                    'aria-expanded',
+                                    'false'
+                                );
 
                             }
                         );
@@ -990,144 +1491,137 @@
             }
 
 
-            /* =====================================================
-               NAVBAR SCROLL EFFECT
-            ===================================================== */
+            /* =================================================
+               SCROLL REVEAL
+               MUNCUL SETIAP KALI MASUK LAYAR
+            ================================================== */
 
-            const navbar =
-                document.getElementById(
-                    'main-navbar'
-                );
-
-
-            if (navbar) {
-
-                const updateNavbar =
-                    function () {
-
-                        if (window.scrollY > 20) {
-
-                            navbar.classList.add(
-                                'bg-vellora-bg',
-                                'shadow-lg',
-                                'shadow-black/20'
-                            );
-
-                            navbar.classList.remove(
-                                'bg-vellora-bg/95'
-                            );
-
-                        } else {
-
-                            navbar.classList.remove(
-                                'bg-vellora-bg',
-                                'shadow-lg',
-                                'shadow-black/20'
-                            );
-
-                            navbar.classList.add(
-                                'bg-vellora-bg/95'
-                            );
-
-                        }
-
-                    };
+            const revealElements =
+                document.querySelectorAll('.reveal');
 
 
-                updateNavbar();
-
-
-                window.addEventListener(
-                    'scroll',
-                    updateNavbar,
-                    {
-                        passive: true
-                    }
-                );
-
+            if (!revealElements.length) {
+                return;
             }
 
 
-            /* =====================================================
-               SCROLL REVEAL
-            ===================================================== */
-
-            const prefersReducedMotion =
+            const reducedMotion =
+                window.matchMedia &&
                 window.matchMedia(
                     '(prefers-reduced-motion: reduce)'
                 ).matches;
 
 
-            if (
-                !prefersReducedMotion &&
-                'IntersectionObserver' in window
-            ) {
+            if (reducedMotion) {
 
-                const observer =
-                    new IntersectionObserver(
-                        function (entries) {
+                revealElements.forEach(
+                    function (element) {
 
-                            entries.forEach(
-                                function (entry) {
+                        element.classList.add(
+                            'is-visible'
+                        );
 
-                                    if (
-                                        entry.isIntersecting
-                                    ) {
+                    }
+                );
 
-                                        entry.target
-                                            .classList
-                                            .add(
-                                                'is-visible'
-                                            );
-
-                                        observer.unobserve(
-                                            entry.target
-                                        );
-
-                                    }
-
-                                }
-                            );
-
-                        },
-                        {
-                            threshold: 0.15
-                        }
-                    );
-
-
-                document
-                    .querySelectorAll('.reveal')
-                    .forEach(
-                        function (element) {
-
-                            observer.observe(
-                                element
-                            );
-
-                        }
-                    );
-
-            } else {
-
-                document
-                    .querySelectorAll('.reveal')
-                    .forEach(
-                        function (element) {
-
-                            element.classList.add(
-                                'is-visible'
-                            );
-
-                        }
-                    );
-
+                return;
             }
 
-        });
-    </script>
+
+            /* =================================================
+               FALLBACK BROWSER LAMA
+            ================================================== */
+
+            if (
+                !('IntersectionObserver' in window)
+            ) {
+
+                revealElements.forEach(
+                    function (element) {
+
+                        element.classList.add(
+                            'is-visible'
+                        );
+
+                    }
+                );
+
+                return;
+            }
+
+
+            /* =================================================
+               INTERSECTION OBSERVER
+               
+               TIDAK ADA observer.unobserve()
+               supaya efek bisa berulang.
+            ================================================== */
+
+            const revealObserver =
+                new IntersectionObserver(
+                    function (entries) {
+
+                        entries.forEach(
+                            function (entry) {
+
+                                if (
+                                    entry.isIntersecting
+                                ) {
+
+                                    /*
+                                     * Masuk layar:
+                                     * tampilkan efek reveal
+                                     */
+                                    entry.target.classList.add(
+                                        'is-visible'
+                                    );
+
+                                } else {
+
+                                    /*
+                                     * Keluar layar:
+                                     * reset supaya nanti
+                                     * bisa muncul lagi.
+                                     */
+                                    entry.target.classList.remove(
+                                        'is-visible'
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    },
+                    {
+                        threshold: 0.12,
+
+                        rootMargin:
+                            '0px 0px -80px 0px'
+                    }
+                );
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    revealObserver.observe(
+                        element
+                    );
+
+                }
+            );
+
+        }
+    );
+
+</script>
+
+
+@stack('scripts')
 
 </body>
+
 </html>
 
     {{-- =========================================================
