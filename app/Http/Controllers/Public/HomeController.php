@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
 use App\Models\Product;
 
 class HomeController extends Controller
@@ -23,14 +24,21 @@ class HomeController extends Controller
     {
         $search = request('search');
 
-        $products = Product::when($search, function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('category', 'like', "%{$search}%");
+        $products = Product::with([
+                'reviews' => fn ($query) => $query->where('is_approved', true),
+            ])
+            ->when($search, function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('category', 'like', "%{$search}%");
+                });
             })
             ->latest()
             ->paginate(9)
             ->withQueryString();
 
-        return view('public.home', compact('products', 'search'));
+        $articles = Article::latest()->take(3)->get();
+
+        return view('public.home', compact('products', 'articles', 'search'));
     }
 }

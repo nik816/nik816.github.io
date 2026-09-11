@@ -392,6 +392,74 @@
 
 
         /* =========================================================
+           POLISHED 3D GOLD LOGO
+        ========================================================= */
+
+        .vellora-logo-3d {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+            isolation: isolate;
+        }
+
+        .vellora-logo-3d img {
+            display: block;
+            object-fit: contain;
+            transform: translateZ(18px);
+            filter:
+                drop-shadow(0 1px 0 rgba(255,255,255,.30))
+                drop-shadow(0 3px 2px rgba(83,55,0,.65))
+                drop-shadow(0 0 10px rgba(245,215,110,.22));
+        }
+
+        .vellora-logo-3d::before {
+            content: '';
+            position: absolute;
+            inset: 10%;
+            border-radius: 28%;
+            background: radial-gradient(circle, rgba(245,215,110,.20), transparent 68%);
+            filter: blur(12px);
+            z-index: -2;
+        }
+
+        .vellora-logo-3d::after {
+            content: '';
+            position: absolute;
+            width: 58%;
+            height: 24%;
+            top: 12%;
+            left: 18%;
+            border-radius: 999px;
+            background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,.52) 48%, transparent 72%);
+            transform: rotate(-18deg);
+            filter: blur(3px);
+            opacity: .55;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        .vellora-logo-3d--nav {
+            width: 34px;
+            height: 34px;
+            perspective: 500px;
+        }
+
+        .vellora-logo-3d--hero {
+            width: 150px;
+            height: 150px;
+            perspective: 700px;
+        }
+
+        .vellora-logo-3d--hero::after {
+            width: 62%;
+            height: 20%;
+            top: 15%;
+            left: 17%;
+        }
+
+        /* =========================================================
            BRAND
         ========================================================= */
 
@@ -708,12 +776,14 @@
                     aria-label="VELLORA"
                 >
 
-                    <img
-                        src="{{ asset('images/vellora-icon.png') }}"
-                        alt="VA"
-                        class="brand-icon"
-                        onerror="this.style.display='none';"
-                    >
+                    <span class="vellora-logo-3d vellora-logo-3d--nav" aria-hidden="true">
+                        <img
+                            src="{{ asset('images/vellora-icon.png') }}"
+                            alt=""
+                            class="brand-icon"
+                            onerror="this.style.display='none';"
+                        >
+                    </span>
 
                     <span class="brand-name">
                         VELLORA
@@ -1333,7 +1403,7 @@
                         transition
                     "
                 >
-                    Tentang Kami
+                    Terms of Service
                 </a>
 
             </div>
@@ -1623,6 +1693,985 @@
 </body>
 
 </html>
+
+    {{-- =========================================================
+     VELLORA 3D MULTI NEON TUBE CURSOR
+     - Banyak tube 3D
+     - Setiap tube warna berbeda
+     - Glow + particles
+     - Hilang saat cursor diam
+========================================================= --}}
+
+<style>
+    #vellora-3d-cursor {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 999999;
+        pointer-events: none;
+        display: block;
+    }
+
+    @media (pointer: coarse) {
+        #vellora-3d-cursor {
+            display: none;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        #vellora-3d-cursor {
+            display: none;
+        }
+    }
+</style>
+
+<canvas id="vellora-3d-cursor"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+(() => {
+    'use strict';
+
+    const canvas =
+        document.getElementById('vellora-3d-cursor');
+
+    if (!canvas) return;
+
+    if (typeof THREE === 'undefined') {
+        console.warn(
+            'Vellora 3D Cursor: Three.js gagal dimuat.'
+        );
+        return;
+    }
+
+    /* =========================================================
+       SCENE
+    ========================================================= */
+
+    const scene = new THREE.Scene();
+
+    const camera =
+        new THREE.OrthographicCamera(
+            window.innerWidth / -2,
+            window.innerWidth / 2,
+            window.innerHeight / 2,
+            window.innerHeight / -2,
+            -1000,
+            1000
+        );
+
+    camera.position.z = 500;
+
+    const renderer =
+        new THREE.WebGLRenderer({
+            canvas: canvas,
+            alpha: true,
+            antialias: true,
+            powerPreference: 'high-performance'
+        });
+
+    renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio || 1, 2)
+    );
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    renderer.setClearColor(0x000000, 0);
+
+    /* =========================================================
+       WARNA
+       SETIAP TUBE BERBEDA
+    ========================================================= */
+
+    const tubeColors = [
+        0xffffff, // White
+        0xff3df2, // Pink
+        0x9b5cff, // Purple
+        0x4da6ff, // Blue
+        0xffee32, // Yellow
+        0xffb52e, // Orange
+        0xff6b35, // Orange Red
+        0x63f3ff, // Cyan
+        0xff82e8  // Light Pink
+    ];
+
+    /* =========================================================
+       KONFIGURASI
+    ========================================================= */
+
+    const TUBE_COUNT = 9;
+    const HISTORY_SIZE = 26;
+
+    /*
+     * Berapa lama setelah cursor berhenti
+     * sebelum efek mulai menghilang.
+     */
+    const IDLE_DELAY = 80;
+
+    /*
+     * Durasi fade out.
+     */
+    const FADE_DURATION = 420;
+
+    const history = [];
+
+    let mouse = {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2
+    };
+
+    let smoothMouse = {
+        x: mouse.x,
+        y: mouse.y
+    };
+
+    let mouseActive = false;
+
+    let lastMouseMove = 0;
+
+    let effectOpacity = 0;
+
+    /* =========================================================
+       TUBE DATA
+    ========================================================= */
+
+    const tubes = [];
+
+    for (let i = 0; i < TUBE_COUNT; i++) {
+
+        const material =
+            new THREE.MeshBasicMaterial({
+                color: tubeColors[i],
+                transparent: true,
+                opacity: 0,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+        const glowMaterial =
+            new THREE.MeshBasicMaterial({
+                color: tubeColors[i],
+                transparent: true,
+                opacity: 0,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+        const tube =
+            new THREE.Mesh(
+                new THREE.BufferGeometry(),
+                material
+            );
+
+        const glow =
+            new THREE.Mesh(
+                new THREE.BufferGeometry(),
+                glowMaterial
+            );
+
+        scene.add(glow);
+        scene.add(tube);
+
+        tubes.push({
+
+            tube,
+            glow,
+
+            material,
+            glowMaterial,
+
+            /*
+             * Posisi masing-masing tube
+             * dibuat sedikit berbeda.
+             */
+            offsetX: (i - 4) * 4.5,
+
+            offsetY:
+                Math.sin(i * 1.7) * 6,
+
+            /*
+             * Ukuran tube.
+             */
+            radius:
+                0.65 +
+                (i % 3) * 0.12,
+
+            /*
+             * Ukuran glow.
+             */
+            glowRadius:
+                2.1 +
+                (i % 3) * 0.5,
+
+            /*
+             * Kedalaman 3D.
+             */
+            depth:
+                (i - 4) * 1.8,
+
+            speed:
+                0.75 +
+                (i % 4) * 0.08,
+
+            phase:
+                i * 0.8
+        });
+    }
+
+    /* =========================================================
+       PARTICLES
+    ========================================================= */
+
+    const particleCount = 70;
+
+    const particlePositions =
+        new Float32Array(
+            particleCount * 3
+        );
+
+    const particleColors =
+        new Float32Array(
+            particleCount * 3
+        );
+
+    const particleData = [];
+
+    for (let i = 0; i < particleCount; i++) {
+
+        particlePositions[i * 3] =
+            -9999;
+
+        particlePositions[i * 3 + 1] =
+            -9999;
+
+        particlePositions[i * 3 + 2] =
+            0;
+
+        const color =
+            new THREE.Color(
+                tubeColors[
+                    Math.floor(
+                        Math.random() *
+                        tubeColors.length
+                    )
+                ]
+            );
+
+        particleColors[i * 3] =
+            color.r;
+
+        particleColors[i * 3 + 1] =
+            color.g;
+
+        particleColors[i * 3 + 2] =
+            color.b;
+
+        particleData.push({
+
+            life: 0,
+
+            maxLife:
+                0.4 +
+                Math.random() * 0.7,
+
+            vx: 0,
+            vy: 0,
+
+            size:
+                1 +
+                Math.random() * 2
+        });
+    }
+
+    const particleGeometry =
+        new THREE.BufferGeometry();
+
+    particleGeometry.setAttribute(
+        'position',
+        new THREE.BufferAttribute(
+            particlePositions,
+            3
+        )
+    );
+
+    particleGeometry.setAttribute(
+        'color',
+        new THREE.BufferAttribute(
+            particleColors,
+            3
+        )
+    );
+
+    const particleMaterial =
+        new THREE.PointsMaterial({
+
+            size: 2.8,
+
+            vertexColors: true,
+
+            transparent: true,
+
+            opacity: 0,
+
+            blending:
+                THREE.AdditiveBlending,
+
+            depthWrite: false,
+
+            sizeAttenuation: false
+        });
+
+    const particles =
+        new THREE.Points(
+            particleGeometry,
+            particleMaterial
+        );
+
+    scene.add(particles);
+
+    let particleIndex = 0;
+
+    /* =========================================================
+       POINTER MOVE
+    ========================================================= */
+
+    window.addEventListener(
+        'pointermove',
+        (event) => {
+
+            /*
+             * Hanya mouse.
+             */
+            if (
+                event.pointerType &&
+                event.pointerType !== 'mouse'
+            ) {
+                return;
+            }
+
+            mouse.x =
+                event.clientX;
+
+            mouse.y =
+                event.clientY;
+
+            mouseActive = true;
+
+            /*
+             * Catat kapan cursor terakhir bergerak.
+             */
+            lastMouseMove =
+                performance.now();
+
+            /*
+             * Efek langsung muncul lagi.
+             */
+            effectOpacity = 1;
+
+            /*
+             * Simpan posisi cursor.
+             */
+            history.unshift({
+
+                x: mouse.x,
+
+                y: mouse.y,
+
+                time: performance.now()
+            });
+
+            if (
+                history.length >
+                HISTORY_SIZE
+            ) {
+                history.pop();
+            }
+
+            /*
+             * Particle.
+             */
+            for (let i = 0; i < 2; i++) {
+
+                spawnParticle(
+                    mouse.x,
+                    mouse.y
+                );
+            }
+        },
+        {
+            passive: true
+        }
+    );
+
+    /* =========================================================
+       SPAWN PARTICLE
+    ========================================================= */
+
+    function spawnParticle(x, y) {
+
+        const index =
+            particleIndex;
+
+        particleIndex =
+            (particleIndex + 1) %
+            particleCount;
+
+        const p =
+            particleData[index];
+
+        particlePositions[
+            index * 3
+        ] =
+            x -
+            window.innerWidth / 2;
+
+        particlePositions[
+            index * 3 + 1
+        ] =
+            -(
+                y -
+                window.innerHeight / 2
+            );
+
+        particlePositions[
+            index * 3 + 2
+        ] =
+            10 +
+            Math.random() * 15;
+
+        p.life =
+            p.maxLife;
+
+        p.vx =
+            (Math.random() - 0.5) *
+            35;
+
+        p.vy =
+            (Math.random() - 0.5) *
+            35;
+    }
+
+    /* =========================================================
+       SCREEN → WORLD
+    ========================================================= */
+
+    function screenPoint(
+        x,
+        y,
+        z = 0
+    ) {
+
+        return new THREE.Vector3(
+
+            x -
+            window.innerWidth / 2,
+
+            -(
+                y -
+                window.innerHeight / 2
+            ),
+
+            z
+        );
+    }
+
+    /* =========================================================
+       BUILD TUBE
+    ========================================================= */
+
+    function buildTube(
+        points,
+        radius
+    ) {
+
+        if (
+            points.length <
+            3
+        ) {
+            return null;
+        }
+
+        const curve =
+            new THREE.CatmullRomCurve3(
+                points,
+                false,
+                'catmullrom',
+                0.45
+            );
+
+        return new THREE.TubeGeometry(
+
+            curve,
+
+            Math.max(
+                12,
+                points.length * 2
+            ),
+
+            radius,
+
+            6,
+
+            false
+        );
+    }
+
+    /* =========================================================
+       UPDATE EFFECT OPACITY
+    ========================================================= */
+
+    function updateEffectOpacity(time) {
+
+        if (!mouseActive) {
+
+            effectOpacity = 0;
+
+            return;
+        }
+
+        const idleTime =
+            time -
+            lastMouseMove;
+
+        /*
+         * Cursor masih bergerak.
+         */
+        if (
+            idleTime <=
+            IDLE_DELAY
+        ) {
+
+            effectOpacity = 1;
+
+            return;
+        }
+
+        /*
+         * Cursor berhenti.
+         */
+        const fadeProgress =
+            Math.min(
+                1,
+                (
+                    idleTime -
+                    IDLE_DELAY
+                ) /
+                FADE_DURATION
+            );
+
+        /*
+         * Smooth fade.
+         */
+        const smoothFade =
+            1 -
+            (
+                fadeProgress *
+                fadeProgress *
+                (
+                    3 -
+                    2 *
+                    fadeProgress
+                )
+            );
+
+        effectOpacity =
+            Math.max(
+                0,
+                smoothFade
+            );
+
+        /*
+         * Sudah benar-benar hilang.
+         */
+        if (
+            effectOpacity <= 0.001
+        ) {
+
+            effectOpacity = 0;
+
+            mouseActive = false;
+        }
+    }
+
+    /* =========================================================
+       UPDATE TUBES
+    ========================================================= */
+
+    function updateTubes(time) {
+
+        updateEffectOpacity(time);
+
+        if (
+            !mouseActive ||
+            history.length < 3
+        ) {
+
+            for (
+                let i = 0;
+                i < tubes.length;
+                i++
+            ) {
+
+                tubes[i]
+                    .material
+                    .opacity = 0;
+
+                tubes[i]
+                    .glowMaterial
+                    .opacity = 0;
+            }
+
+            return;
+        }
+
+        /*
+         * Smooth cursor.
+         */
+        smoothMouse.x +=
+            (
+                mouse.x -
+                smoothMouse.x
+            ) * 0.28;
+
+        smoothMouse.y +=
+            (
+                mouse.y -
+                smoothMouse.y
+            ) * 0.28;
+
+        for (
+            let i = 0;
+            i < tubes.length;
+            i++
+        ) {
+
+            const data =
+                tubes[i];
+
+            const points = [];
+
+            const wave =
+                Math.sin(
+                    time *
+                    0.004 *
+                    data.speed +
+                    data.phase
+                );
+
+            const wave2 =
+                Math.cos(
+                    time *
+                    0.003 +
+                    data.phase
+                );
+
+            /*
+             * Setiap tube punya jalur
+             * masing-masing.
+             */
+
+            for (
+                let j = 0;
+                j < history.length;
+                j++
+            ) {
+
+                const h =
+                    history[j];
+
+                const progress =
+                    j /
+                    history.length;
+
+                /*
+                 * Semakin ke belakang
+                 * semakin menyebar.
+                 */
+                const spread =
+                    data.offsetX *
+                    (
+                        1 -
+                        progress
+                    );
+
+                const waveAmount =
+                    wave *
+                    5 *
+                    (
+                        1 -
+                        progress
+                    );
+
+                const x =
+                    h.x +
+                    spread +
+                    waveAmount;
+
+                const y =
+                    h.y +
+
+                    data.offsetY *
+                    (
+                        1 -
+                        progress
+                    ) +
+
+                    wave2 *
+                    3 *
+                    (
+                        1 -
+                        progress
+                    );
+
+                /*
+                 * Z depth.
+                 */
+                const z =
+                    data.depth +
+
+                    Math.sin(
+                        progress * 8 +
+                        data.phase
+                    ) * 8;
+
+                points.push(
+                    screenPoint(
+                        x,
+                        y,
+                        z
+                    )
+                );
+            }
+
+            const coreGeometry =
+                buildTube(
+                    points,
+                    data.radius
+                );
+
+            const glowGeometry =
+                buildTube(
+                    points,
+                    data.glowRadius
+                );
+
+            if (
+                coreGeometry
+            ) {
+
+                /*
+                 * Buang geometry lama.
+                 */
+                data.tube
+                    .geometry
+                    .dispose();
+
+                data.glow
+                    .geometry
+                    .dispose();
+
+                /*
+                 * Geometry baru.
+                 */
+                data.tube.geometry =
+                    coreGeometry;
+
+                data.glow.geometry =
+                    glowGeometry;
+
+                /*
+                 * Rotasi kecil agar
+                 * terasa lebih 3D.
+                 */
+                data.tube.rotation.z =
+                    Math.sin(
+                        time *
+                        0.001 +
+                        data.phase
+                    ) * 0.015;
+
+                data.glow.rotation.z =
+                    data.tube.rotation.z;
+
+                /*
+                 * Core tube.
+                 */
+                data.material.opacity =
+                    (
+                        0.75 +
+                        Math.sin(
+                            time *
+                            0.003 +
+                            data.phase
+                        ) * 0.15
+                    ) *
+                    effectOpacity;
+
+                /*
+                 * Glow.
+                 */
+                data.glowMaterial.opacity =
+                    (
+                        0.14 +
+                        Math.sin(
+                            time *
+                            0.002 +
+                            data.phase
+                        ) * 0.05
+                    ) *
+                    effectOpacity;
+            }
+        }
+    }
+
+    /* =========================================================
+       UPDATE PARTICLES
+    ========================================================= */
+
+    function updateParticles(delta) {
+
+        /*
+         * Particle opacity mengikuti
+         * opacity efek utama.
+         */
+        particleMaterial.opacity =
+            0.95 *
+            effectOpacity;
+
+        for (
+            let i = 0;
+            i < particleCount;
+            i++
+        ) {
+
+            const p =
+                particleData[i];
+
+            if (
+                p.life <= 0
+            ) {
+                continue;
+            }
+
+            p.life -= delta;
+
+            particlePositions[
+                i * 3
+            ] +=
+                p.vx *
+                delta;
+
+            particlePositions[
+                i * 3 + 1
+            ] +=
+                p.vy *
+                delta;
+
+            p.vx *= 0.96;
+            p.vy *= 0.96;
+
+            if (
+                p.life <= 0
+            ) {
+
+                particlePositions[
+                    i * 3
+                ] = -9999;
+
+                particlePositions[
+                    i * 3 + 1
+                ] = -9999;
+            }
+        }
+
+        particleGeometry
+            .attributes
+            .position
+            .needsUpdate = true;
+    }
+
+    /* =========================================================
+       RESIZE
+    ========================================================= */
+
+    window.addEventListener(
+        'resize',
+        () => {
+
+            camera.left =
+                window.innerWidth / -2;
+
+            camera.right =
+                window.innerWidth / 2;
+
+            camera.top =
+                window.innerHeight / 2;
+
+            camera.bottom =
+                window.innerHeight / -2;
+
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+            renderer.setPixelRatio(
+                Math.min(
+                    window.devicePixelRatio || 1,
+                    2
+                )
+            );
+        }
+    );
+
+    /* =========================================================
+       ANIMATION
+    ========================================================= */
+
+    let previousTime =
+        performance.now();
+
+    function animate(time) {
+
+        requestAnimationFrame(
+            animate
+        );
+
+        const delta =
+            Math.min(
+                (
+                    time -
+                    previousTime
+                ) / 1000,
+                0.033
+            );
+
+        previousTime =
+            time;
+
+        updateTubes(time);
+
+        updateParticles(delta);
+
+        renderer.render(
+            scene,
+            camera
+        );
+    }
+
+    animate(
+        performance.now()
+    );
+
+})();
+</script>
 
     {{-- =========================================================
      VELLORA 3D MULTI NEON TUBE CURSOR
