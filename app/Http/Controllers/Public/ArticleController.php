@@ -16,9 +16,20 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $articles = Article::latest()->paginate(9);
+        $search = trim((string) request('search'));
 
-        return view('public.articles.index', compact('articles'));
+        $articles = Article::query()
+            ->when($search !== '', function ($q) use ($search) {
+                $q->where(function ($w) use ($search) {
+                    $w->where('title', 'like', "%{$search}%")
+                      ->orWhere('content', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(9)
+            ->withQueryString();
+
+        return view('public.articles.index', compact('articles', 'search'));
     }
 
     /**
@@ -32,6 +43,10 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        return view('public.articles.show', compact('article'));
+        $related = Article::where('id', '!=', $article->id)->latest()->take(3)->get();
+        $prev = Article::where('id', '<', $article->id)->orderByDesc('id')->first();
+        $next = Article::where('id', '>', $article->id)->orderBy('id')->first();
+
+        return view('public.articles.show', compact('article', 'related', 'prev', 'next'));
     }
 }

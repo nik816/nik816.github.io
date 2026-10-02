@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Product;
+use App\Models\Review;
 
 class HomeController extends Controller
 {
@@ -39,6 +40,20 @@ class HomeController extends Controller
 
         $articles = Article::latest()->take(3)->get();
 
-        return view('public.home', compact('products', 'articles', 'search'));
+        // Statistik nyata dari database (tanpa angka karangan)
+        $stats = [
+            'products'  => Product::count(),
+            'available' => Product::where('stock', '>', 0)->count(),
+            'articles'  => Article::count(),
+            'reviews'   => Review::where('is_approved', true)->count(),
+        ];
+
+        $latestReviews = Review::with('product:id,name')
+            ->where('is_approved', true)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('public.home', compact('products', 'articles', 'search', 'stats', 'latestReviews'));
     }
 }

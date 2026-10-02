@@ -21,7 +21,24 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::latest()->paginate(10);
+        $query = Product::query()
+            ->when(request('q'), function ($q, $search) {
+                $q->where(function ($w) use ($search) {
+                    $w->where('name', 'like', "%{$search}%")
+                      ->orWhere('category', 'like', "%{$search}%");
+                });
+            })
+            ->when(request('stok') === 'tersedia', fn ($q) => $q->where('stock', '>', 0))
+            ->when(request('stok') === 'habis', fn ($q) => $q->where('stock', '<=', 0));
+
+        switch (request('sort')) {
+            case 'nama':  $query->orderBy('name'); break;
+            case 'harga': $query->orderBy('price'); break;
+            case 'stok':  $query->orderBy('stock'); break;
+            default:      $query->latest();
+        }
+
+        $products = $query->paginate(10)->withQueryString();
 
         return view('admin.products.index', compact('products'));
     }

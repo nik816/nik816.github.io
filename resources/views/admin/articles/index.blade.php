@@ -12,6 +12,12 @@
 
 @section('content')
 
+    <form method="GET" action="{{ url()->current() }}" class="mb-4 flex flex-wrap gap-2">
+        <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari judul atau isi artikel..." aria-label="Cari artikel" class="flex-1 min-w-[180px] bg-vellora-surface border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-vellora-gold">
+        <button type="submit" class="px-4 py-2 bg-vellora-gold hover:bg-vellora-gold-light text-black text-xs font-bold rounded-lg transition-colors">Cari</button>
+        @if(request('q'))<a href="{{ url()->current() }}" class="px-4 py-2 text-xs font-semibold text-vellora-muted hover:text-white flex items-center">Reset</a>@endif
+    </form>
+
     <div class="bg-vellora-bg2 rounded-2xl shadow-sm border border-white/10 overflow-hidden">
         @if($articles->count())
             <div class="overflow-x-auto">
@@ -66,7 +72,7 @@
         @else
             <div class="text-center py-20">
                 <div class="text-4xl mb-3">📰</div>
-                <p class="text-vellora-muted text-sm font-medium mb-4">Belum ada artikel. Mulai tulis artikel pertama Anda.</p>
+                <p class="text-vellora-muted text-sm font-medium mb-4">{{ request('q') ? 'Tidak ada artikel yang cocok dengan pencarian.' : 'Belum ada artikel. Mulai tulis artikel pertama Anda.' }}</p>
                 <a href="{{ route('admin.articles.create') }}" class="inline-flex items-center gap-1.5 px-5 py-2.5 bg-vellora-gold hover:bg-vellora-gold-light text-black text-sm font-bold rounded-xl transition-colors">Tambah Artikel</a>
             </div>
         @endif

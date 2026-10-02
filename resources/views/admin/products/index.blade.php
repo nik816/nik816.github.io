@@ -11,6 +11,22 @@
 @endsection
 
 @section('content')
+    <form method="GET" action="{{ url()->current() }}" class="mb-4 flex flex-wrap gap-2">
+        <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari nama atau kategori..." aria-label="Cari produk" class="flex-1 min-w-[180px] bg-vellora-surface border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-vellora-gold">
+        <select name="stok" aria-label="Filter stok" class="bg-vellora-surface border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-vellora-gold">
+            <option value="">Semua stok</option>
+            <option value="tersedia" @selected(request('stok') === 'tersedia')>Tersedia</option>
+            <option value="habis" @selected(request('stok') === 'habis')>Habis</option>
+        </select>
+        <select name="sort" aria-label="Urutkan" class="bg-vellora-surface border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-vellora-gold">
+            <option value="">Terbaru</option>
+            <option value="nama" @selected(request('sort') === 'nama')>Nama A–Z</option>
+            <option value="harga" @selected(request('sort') === 'harga')>Harga terendah</option>
+            <option value="stok" @selected(request('sort') === 'stok')>Stok terendah</option>
+        </select>
+        <button type="submit" class="px-4 py-2 bg-vellora-gold hover:bg-vellora-gold-light text-black text-xs font-bold rounded-lg transition-colors">Terapkan</button>
+        @if(request()->hasAny(['q','stok','sort']))<a href="{{ url()->current() }}" class="px-4 py-2 text-xs font-semibold text-vellora-muted hover:text-white flex items-center">Reset</a>@endif
+    </form>
 
     <div class="bg-vellora-surface rounded-2xl border border-white/[0.10] overflow-hidden">
         @if($products->count())
@@ -37,7 +53,7 @@
                                                 <div class="w-full h-full flex items-center justify-center text-vellora-muted text-lg">📦</div>
                                             @endif
                                         </div>
-                                        <a href="{{ route('products.show', $product->id) }}" target="_blank" class="font-semibold text-white hover:text-vellora-gold transition-colors line-clamp-1">
+                                        <a href="{{ route('products.show', $product->id) }}" target="_blank" rel="noopener noreferrer" class="font-semibold text-white hover:text-vellora-gold transition-colors line-clamp-1">
                                             {{ $product->name }}
                                         </a>
                                     </div>
@@ -78,7 +94,7 @@
         @else
             <div class="text-center py-20">
                 <div class="text-4xl mb-3">📦</div>
-                <p class="text-vellora-muted text-sm font-medium mb-4">Belum ada produk. Mulai tambahkan produk pertama Anda.</p>
+                <p class="text-vellora-muted text-sm font-medium mb-4">{{ request()->hasAny(['q','stok','sort']) ? 'Tidak ada produk yang cocok dengan pencarian atau filter.' : 'Belum ada produk. Mulai tambahkan produk pertama Anda.' }}</p>
                 <a href="{{ route('products.create') }}" class="inline-flex items-center gap-1.5 px-5 py-2.5 bg-vellora-gold hover:bg-vellora-gold-light text-black text-sm font-bold rounded-xl transition-colors">Tambah Produk</a>
             </div>
         @endif

@@ -23,7 +23,16 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $articles = Article::latest()->paginate(10);
+        $articles = Article::query()
+            ->when(request('q'), function ($q, $search) {
+                $q->where(function ($w) use ($search) {
+                    $w->where('title', 'like', "%{$search}%")
+                      ->orWhere('content', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.articles.index', compact('articles'));
     }

@@ -6,6 +6,16 @@
 
     <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10 md:py-14">
 
+        <nav aria-label="Breadcrumb" class="mb-4 text-xs text-zinc-500">
+            <ol class="flex flex-wrap items-center gap-1.5">
+                <li><a href="{{ route('home') }}" class="hover:text-white">Beranda</a></li>
+                <li aria-hidden="true">/</li>
+                <li><a href="{{ route('products.katalog') }}" class="hover:text-white">Produk</a></li>
+                <li aria-hidden="true">/</li>
+                <li class="truncate text-zinc-300" aria-current="page">{{ $product->name }}</li>
+            </ol>
+        </nav>
+
         {{-- =========================================================
              TOMBOL KEMBALI
         ========================================================== --}}
@@ -31,11 +41,14 @@
             <div class="w-full">
                 @if(!empty($product->image) && Storage::disk('public')->exists($product->image))
 
+                    <button type="button" data-lightbox="{{ asset('storage/' . $product->image) }}" aria-label="Perbesar gambar {{ $product->name }}" class="block w-full cursor-zoom-in">
                     <img
                         src="{{ asset('storage/' . $product->image) }}"
                         alt="{{ $product->name }}"
+                        loading="eager"
                         class="w-full aspect-square md:aspect-[4/3] object-cover rounded-2xl shadow-sm border border-white/10"
                     >
+                    </button>
 
                 @else
 
@@ -129,7 +142,7 @@
 
                     {{-- TOMBOL WHATSAPP --}}
                     <a
-                        href="https://wa.me/?text={{ urlencode('Halo, saya ingin memesan produk: ' . $product->name) }}"
+                        href="https://wa.me/6285848658854?text={{ urlencode('Halo, saya ingin memesan produk: ' . $product->name) }}"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="w-full flex items-center justify-center gap-2 bg-vellora-gold hover:bg-vellora-gold-light text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-vellora-gold/20 transition-all duration-200 hover:-translate-y-0.5 text-sm"
@@ -569,12 +582,67 @@
 
         </section>
 
+        {{-- PRODUK TERKAIT --}}
+        @if(isset($related) && $related->isNotEmpty())
+            <section class="mt-10 md:mt-14" aria-labelledby="related-title">
+                <h2 id="related-title" class="mb-5 text-lg font-extrabold text-white">Produk Terkait</h2>
+                <div class="vr-adapt">
+                    @foreach($related as $item)
+                        <a href="{{ route('products.show', $item->id) }}" class="group overflow-hidden rounded-2xl border border-white/10 bg-vellora-bg2 transition hover:border-[#D4AF37]/40">
+                            <div class="aspect-[4/3] overflow-hidden bg-vellora-surface">
+                                @if(!empty($item->image) && Storage::disk('public')->exists($item->image))
+                                    <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+                                @endif
+                            </div>
+                            <div class="p-3.5">
+                                <p class="line-clamp-1 text-sm font-bold text-white">{{ $item->name }}</p>
+                                <p class="mt-1 text-sm font-black text-vellora-gold">Rp {{ number_format($item->price, 0, ',', '.') }}</p>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+        @endif
+
+        @if(isset($related) && $related->isEmpty())
+            <section class="mt-10 md:mt-14" aria-labelledby="related-empty-title">
+                <h2 id="related-empty-title" class="mb-2 text-lg font-extrabold text-white">Produk Terkait</h2>
+                <div class="grid">@include('partials.empty-state', ['title' => 'Belum ada produk lain', 'text' => 'Produk lain akan tampil di sini setelah ditambahkan.', 'href' => route('products.katalog'), 'label' => 'Lihat Katalog'])</div>
+            </section>
+        @endif
+
+        {{-- TERAKHIR DILIHAT (localStorage) --}}
+        <section id="recent-viewed" class="mt-10 md:mt-14" hidden aria-labelledby="recent-title">
+            <h2 id="recent-title" class="mb-5 text-lg font-extrabold text-white">Terakhir Dilihat</h2>
+            <div data-recent-list class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"></div>
+        </section>
+
     </main>
 
 
     {{-- =========================================================
          SCRIPT RATING
     ========================================================== --}}
+    @php
+        $recentPayload = [
+            'id' => (int) $product->id,
+            'name' => (string) $product->name,
+            'price' => (float) $product->price,
+            'image' => (!empty($product->image) && Storage::disk('public')->exists($product->image)) ? asset('storage/' . $product->image) : null,
+            'url' => route('products.show', $product->id),
+        ];
+    @endphp
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                if (!window.velloraRecent) return;
+                window.velloraRecent.save({!! json_encode($recentPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) !!});
+                var sec = document.getElementById('recent-viewed');
+                if (sec && window.velloraRecent.render(sec.querySelector('[data-recent-list]'), {{ (int) $product->id }}, 4) > 0) sec.hidden = false;
+            });
+        </script>
+    @endpush
+
     @push('scripts')
 
         <script>
@@ -804,6 +872,29 @@
 
         </script>
 
+    @endpush
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var trg = document.querySelector('[data-lightbox]'); if (!trg) return;
+                var ov = null, last = null;
+                function close() { if (!ov) return; ov.remove(); ov = null; document.removeEventListener('keydown', key); document.body.style.overflow = ''; if (last) last.focus(); }
+                function key(e) { if (e.key === 'Escape') close(); else if (e.key === 'Tab') { e.preventDefault(); ov.querySelector('button').focus(); } }
+                trg.addEventListener('click', function () {
+                    last = trg; ov = document.createElement('div');
+                    ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Pratinjau gambar');
+                    ov.className = 'fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 p-4';
+                    var im = document.createElement('img'); im.src = trg.dataset.lightbox; im.alt = trg.getAttribute('aria-label') || '';
+                    im.className = 'max-h-[88vh] max-w-full rounded-2xl border border-white/10 object-contain';
+                    var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Tutup'; b.setAttribute('aria-label', 'Tutup pratinjau');
+                    b.className = 'absolute right-4 top-4 rounded-full border border-[#D4AF37]/60 bg-black/70 px-4 py-2 text-sm font-bold text-white';
+                    b.addEventListener('click', close); ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+                    ov.appendChild(im); ov.appendChild(b); document.body.appendChild(ov); document.body.style.overflow = 'hidden';
+                    document.addEventListener('keydown', key); b.focus();
+                });
+            });
+        </script>
     @endpush
 
 @endsection
